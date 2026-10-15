@@ -1,0 +1,17 @@
+{
+    "name": "raul/reservas-misterplan",
+    "description": "API de gestion de reservas en PHP nativo",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Raul Val",
+            "email": "raulvaliturbide@gmail.com"
+        }
+    ],
+    "require": {}
+}
