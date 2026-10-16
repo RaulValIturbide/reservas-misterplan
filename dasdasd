@@ -1,0 +1,23 @@
+[33mcommit 8ebd25a086602620efb6d306ac9b7629804aa9c0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: raul val iturbide <raulvaliturbide@gmail.com>
+Date:   Fri Oct 16 10:57:26 2026 +0200
+
+    Añadido el .env para la conexión con la BD(dependencia phpdotenv) y puesto un .env de ejemplo
+
+[33mcommit 82ad1bac053bb537aeadad87a8a8e5520951d171[m
+Author: raul val iturbide <raulzgz98@hotmail.com>
+Date:   Thu Oct 15 18:27:29 2026 +0200
+
+    Datos de ejemplo (DML) añadidos a ambas tablas (reserva y reserva_evento)
+
+[33mcommit c5bf6aacd243df3479d042f8dfc4fdb58ef05ad4[m
+Author: raul val iturbide <raulzgz98@hotmail.com>
+Date:   Thu Oct 15 17:51:39 2026 +0200
+
+    Esquema de base de datos con las tablas reserva y reserva_evento creadas (DDL completado)
+
+[33mcommit 377241bbb17e586d2e2231f77f754c5553b72de3[m
+Author: raul val iturbide <raulzgz98@hotmail.com>
+Date:   Thu Oct 15 15:58:14 2026 +0200
+
+    Composer,lock,autoload e ignore montado, listo para añadir dependencias
