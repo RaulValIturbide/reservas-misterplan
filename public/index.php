@@ -1,12 +1,17 @@
 <?php
 declare(strict_types=1);
 
+use App\Repository\ReservaRepository;
+use App\Database\Conexion;
 use Dotenv\Dotenv;
+
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $dot = Dotenv::createImmutable(dirname(__DIR__));
 $dot->load();
+
+$repoReserva = new ReservaRepository(Conexion::obtenerConexion());
 
 
 $metodo = $_SERVER['REQUEST_METHOD'];
@@ -19,32 +24,43 @@ $ruta = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
  * @param int $codigo
  * @return void
  */
-function responderJson(array $datos,int $codigo = 200):void{
+function responderJson(array $datos, int $codigo = 200): void
+{
     http_response_code($codigo);
-    header('Content-Type: application/json');
-    echo json_encode($datos);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($datos,JSON_UNESCAPED_UNICODE);
+}
+function responderBusquedaID(ReservaRepository $repo, int $numID):void{
+    $respuesta = $repo->buscarPorID($numID);
+    if($respuesta !== null){
+        responderJson($respuesta,200);
+    }else{
+        responderJson(['mensaje' => 'Reserva no encontrada'], 404);
+    }
 }
 
 $fragmentos = explode('/', $ruta);
 $numIdConsulta = null;
 
-if(count($fragmentos) === 4
+if (count($fragmentos) === 4
     && $fragmentos[1] === 'api'
     && $fragmentos[2] === 'reservas'
-    && ctype_digit($fragmentos[3])){
-    $numIdConsulta = (int) $fragmentos[3];
+    && ctype_digit($fragmentos[3])) {
+    $numIdConsulta = (int)$fragmentos[3];
     $ruta = '/api/reservas/id';
 }
 
 
 $peticion = $metodo . $ruta;
 match ($peticion) {
-    'GET/api/reservas' => responderJson(['mensaje' => 'listar'],200),
-    'GET/api/reservas/id' => responderJson(['mensaje' => 'mostrar id '.$numIdConsulta],200),
-    'POST/api/reservas' => responderJson(['mensaje' => 'crear'],201),
-    'PATCH/api/reservas/id' => responderJson(['mensaje' => 'editar id '.$numIdConsulta],200),
-    'DELETE/api/reservas/id' => responderJson(['mensaje' => 'no permitido'],405),
+    'GET/api/reservas' => responderJson($repoReserva ->listarTodasReservas(), 200),
+    'GET/api/reservas/id' => responderBusquedaID($repoReserva, $numIdConsulta),
+    'POST/api/reservas' => responderJson(['mensaje' => 'crear'], 201),
+    'PATCH/api/reservas/id' => responderJson(['mensaje'=>'actualizar'], 200),
+    'DELETE/api/reservas/id' => responderJson(['mensaje' => 'no permitido'], 405),
 
-    default => responderJson(['mensaje' => 'error'],404),
+    default => responderJson(['mensaje' => 'error'], 404),
 };
+
+
 
