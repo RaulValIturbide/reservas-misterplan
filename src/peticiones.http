@@ -1,0 +1,55 @@
+
+//ESTO ES VALIDACION DE PRUEBAS
+
+### 1 Reserva correcta -> 201
+POST http://localhost:8000/api/reservas
+Content-Type: application/json
+
+{
+  "nombre_huesped": "Prueba",
+  "email_huesped": "prueba@gmail.com",
+  "nombre_alojamiento": "Prueba",
+  "fecha_entrada": " 2025-12-14 ",
+  "fecha_salida": "2026-12-10",
+  "importe": "250"
+}
+
+### 2 Sin nombre ni email -> 400
+POST http://localhost:8000/api/reservas
+Content-Type: application/json
+
+{
+  "nombre_huesped": "",
+  "email_huesped": "",
+  "nombre_alojamiento": "Prueba",
+  "fecha_entrada": " 2025-12-14 ",
+  "fecha_salida": "2026-12-10",
+  "importe": "250"
+}
+
+### 3 Email incorrecto y fechas invertidas -> 400
+POST http://localhost:8000/api/reservas
+Content-Type: application/json
+
+{
+  "nombre_huesped": "PRUEBA",
+  "email_huesped": "emailmalformato",
+  "nombre_alojamiento": "Prueba",
+  "fecha_entrada": " 2030-12-14 ",
+  "fecha_salida": "2026-12-10",
+  "importe": "250"
+}
+
+### 4 JSON mal formado en la peticion -> 400
+POST http://localhost:8000/api/reservas
+Content-Type: application/json
+
+{
+  "HOLA, SOY UN JSON MAL FORMADO"
+}
+
+### 5 JSON que no es un objeto -> 400
+POST http://localhost:8000/api/reservas
+Content-Type: application/json
+
+"soy un json pero no una array"
