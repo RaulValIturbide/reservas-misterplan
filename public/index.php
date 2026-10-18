@@ -86,8 +86,6 @@ function crearReserva(ReservaService $reservaServicio): void
 
         } catch (ValidacionException $e) {
             responderJson(['errores' => $e->errores], 400);
-        } catch (Throwable $e) {
-            responderJson(['mensaje' => 'Error al crear la reserva'], 500);
         }
     }
 
@@ -127,7 +125,7 @@ try {
         'GET/api/reservas' => responderJson($reservaService->listarReservas(), 200),
         'GET/api/reservas/id' => mostrarReserva($reservaService, $numIdConsulta),
         'POST/api/reservas' => crearReserva($reservaService),
-        'PATCH/api/reservas/id' => cambiarEstadoReserva($reservaService,$numIdConsulta),
+        'PATCH/api/reservas/id' => cambiarEstadoReserva($reservaService, $numIdConsulta),
         'DELETE/api/reservas/id' => responderJson(['mensaje' => 'no permitido'], 405),
 
         default => responderJson(['mensaje' => 'ruta no encontrada'], 404),

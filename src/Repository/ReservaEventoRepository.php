@@ -31,7 +31,7 @@ class ReservaEventoRepository
         $sql = " SELECT id,reserva_id,tipo,descripcion,fecha_creacion
                  FROM reserva_evento 
                  WHERE reserva_id = :reservaId
-                 ORDER BY fecha_creacion ASC ";
+                 ORDER BY fecha_creacion ASC,id ASC ";
         $ejecucion = $this->pdo->prepare($sql);
         $ejecucion->bindValue(":reservaId", $reservaId, PDO::PARAM_INT);
         $ejecucion->execute();
