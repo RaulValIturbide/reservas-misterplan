@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Dto\NuevaReservaDTO;
+use App\Enum\EstadoReserva;
 use PDO;
 
 class ReservaRepository
@@ -67,6 +68,17 @@ class ReservaRepository
         $ultimoId = (int)$this->pdo->lastInsertId();
 
         return $ultimoId;
+    }
+
+    public function actualizarEstado(int $reservaID, EstadoReserva $nuevoEstado): void
+    {
+        $sql = " UPDATE reserva 
+                 SET estado = :estado
+                 WHERE id = :id";
+        $ejecucion = $this->pdo->prepare($sql);
+        $ejecucion->bindValue(":estado", $nuevoEstado->value, PDO::PARAM_STR);
+        $ejecucion->bindValue(":id", $reservaID, PDO::PARAM_INT);
+        $ejecucion->execute();
     }
 
 

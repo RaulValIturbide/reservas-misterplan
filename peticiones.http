@@ -65,3 +65,67 @@ GET http://localhost:8000/api/reservas/18
 ### 8 No existe la reserva -> 404
 GET http://localhost:8000/api/reservas/999
 
+### 9 Confirmar una pendiente -> 200
+PATCH http://localhost:8000/api/reservas/2
+Content-Type: application/json
+
+{
+  "estado": "confirmada"
+}
+
+### 10 Repetir la misma petición -> 409
+PATCH http://localhost:8000/api/reservas/2
+Content-Type: application/json
+
+{
+  "estado": "confirmada"
+}
+
+### 11 Estado que no existe -> 400
+PATCH http://localhost:8000/api/reservas/2
+Content-Type: application/json
+
+{
+  "estado": "pagada"
+}
+
+### 12 Estado que no es texto -> 400
+PATCH http://localhost:8000/api/reservas/2
+Content-Type: application/json
+
+{
+  "estado": 5
+}
+
+### 13 Sin campo estado -> 400
+PATCH http://localhost:8000/api/reservas/2
+Content-Type: application/json
+
+{
+  "notas": "sin estado"
+}
+
+### 14 Reserva que no existe -> 404
+PATCH http://localhost:8000/api/reservas/999
+Content-Type: application/json
+
+{
+  "estado": "cancelada"
+}
+
+### 15 JSON mal formado -> 400
+PATCH http://localhost:8000/api/reservas/2
+Content-Type: application/json
+
+{
+  "estado": "cancelada",
+}
+
+### 16 Cancelar la confirmada -> 200 (el historial debe mostrar los dos cambios)
+PATCH http://localhost:8000/api/reservas/2
+Content-Type: application/json
+
+{
+  "estado": "cancelada"
+}
+

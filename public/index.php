@@ -1,7 +1,10 @@
 <?php
 declare(strict_types=1);
 
+use App\Enum\EstadoReserva;
 use App\Repository\ReservaEventoRepository;
+use App\Exception\TransicionEstadoException;
+use App\Exception\ReservaNoEncontradaException;
 use App\Repository\ReservaRepository;
 use App\Service\ReservaService;
 use App\Database\Conexion;
@@ -30,6 +33,32 @@ function mostrarReserva(ReservaService $reservaService, int $numID): void
         responderJson(['mensaje' => 'Reserva no encontrada'], 404);
     }
 }
+
+function cambiarEstadoReserva(ReservaService $reservaService, int $numID): void
+{
+    $datos = leerCuerpoJson();
+    if ($datos === null) {
+        return;
+    }
+    $valor = $datos['estado'] ?? null;
+    $nuevoEstado = is_string($valor) ? EstadoReserva::tryFrom($valor) : null;
+    if ($nuevoEstado === null) {
+        $validos = implode(', ', array_map(fn(EstadoReserva $e) => $e->value, EstadoReserva::cases()));
+        responderJson([
+            'errores' => ['estado' => "El estado debe ser uno de: $validos."],
+        ], 400);
+        return;
+    }
+    try {
+        $reservaService->cambiarEstado($numID, $nuevoEstado);
+        responderJson($reservaService->obtenerDetalle($numID), 200);
+    } catch (ReservaNoEncontradaException $rne) {
+        responderJson(['mensaje' => $rne->getMessage()], 404);
+    } catch (TransicionEstadoException $tee) {
+        responderJson(['mensaje' => $tee->getMessage()], 409);
+    }
+}
+
 
 function leerCuerpoJson(): ?array
 {
@@ -98,7 +127,7 @@ try {
         'GET/api/reservas' => responderJson($reservaService->listarReservas(), 200),
         'GET/api/reservas/id' => mostrarReserva($reservaService, $numIdConsulta),
         'POST/api/reservas' => crearReserva($reservaService),
-        'PATCH/api/reservas/id' => responderJson(['mensaje' => 'actualizar'], 200),
+        'PATCH/api/reservas/id' => cambiarEstadoReserva($reservaService,$numIdConsulta),
         'DELETE/api/reservas/id' => responderJson(['mensaje' => 'no permitido'], 405),
 
         default => responderJson(['mensaje' => 'ruta no encontrada'], 404),
