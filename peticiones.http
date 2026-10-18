@@ -55,7 +55,13 @@ Content-Type: application/json
 "soy un json pero no una array"
 
 
-### 6 prueba busqueda
+### 6 prueba busqueda reservas -> 200
 GET http://localhost:8000/api/reservas
 
-"api/reservas"
+
+### 7 Detalle de reserva concreta -> 200
+GET http://localhost:8000/api/reservas/18
+
+### 8 No existe la reserva -> 404
+GET http://localhost:8000/api/reservas/999
+
