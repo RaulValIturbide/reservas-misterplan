@@ -43,7 +43,7 @@ function responderBusquedaID(ReservaRepository $repo, int $numID): void
     }
 }
 
-function crearReserva():void
+function crearReserva(ReservaRepository $repo):void
 {
     $reservaValidation = new ReservaValidation();
     $texto = file_get_contents('php://input');
@@ -55,6 +55,7 @@ function crearReserva():void
         try {
             $reserva = $reservaValidation->validarReserva($datos);
             responderJson(['mensaje'=>'Reserva validada'], 201);
+            $repo->insertar($reserva);
         } catch (ValidacionException $e) {
             responderJson(['errores' => $e->errores], 400);
         }
@@ -78,7 +79,7 @@ $peticion = $metodo . $ruta;
 match ($peticion) {
     'GET/api/reservas' => responderJson($repoReserva->listarTodasReservas(), 200),
     'GET/api/reservas/id' => responderBusquedaID($repoReserva, $numIdConsulta),
-    'POST/api/reservas' => crearReserva(),
+    'POST/api/reservas' => crearReserva($repoReserva),
     'PATCH/api/reservas/id' => responderJson(['mensaje' => 'actualizar'], 200),
     'DELETE/api/reservas/id' => responderJson(['mensaje' => 'no permitido'], 405),
 

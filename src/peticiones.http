@@ -53,3 +53,9 @@ POST http://localhost:8000/api/reservas
 Content-Type: application/json
 
 "soy un json pero no una array"
+
+
+### 6 prueba busqueda
+GET http://localhost:8000/api/reservas
+
+"api/reservas"
