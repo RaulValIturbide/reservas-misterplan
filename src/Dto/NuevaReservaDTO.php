@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Dto;
 use DateTimeImmutable;
-use App\Dto\ResultadoDTO;
 
 /**
  * Esta clase tiene como objetivo servir de puente entre los datos introducidos por el usuario y la inserción en la tabla Sql

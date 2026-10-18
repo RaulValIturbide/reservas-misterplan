@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Dto\NuevaReservaDTO;
+use Exception;
 use PDO;
 
 class ReservaRepository
@@ -46,7 +47,8 @@ class ReservaRepository
         return $ejecucion->fetch(PDO::FETCH_ASSOC) ?: null;
     }
 
-    public function insertar(NuevaReservaDTO $dto):int {
+    public function insertar(NuevaReservaDTO $dto): int
+    {
 
         $sql = " INSERT INTO reserva(nombre_huesped,email_huesped,nombre_alojamiento,fecha_entrada,fecha_salida,notas,importe)
                  VALUES(:nombreHuesped,:emailHuesped,:nombreAlojamiento,:fechaEntrada,:fechaSalida,:notas,:importe)";
@@ -55,16 +57,17 @@ class ReservaRepository
         $fechaSalidaString = $dto->fechaSalida->format('Y-m-d');
 
         $ejecucion = $this->pdo->prepare($sql);
-        $ejecucion->bindValue(":nombreHuesped",$dto->nombreHuesped,PDO::PARAM_STR);
-        $ejecucion->bindValue(":emailHuesped",$dto->emailHuesped,PDO::PARAM_STR);
-        $ejecucion->bindValue(":nombreAlojamiento",$dto->nombreAlojamiento,PDO::PARAM_STR);
-        $ejecucion->bindValue(":fechaEntrada",$fechaEntradaString);
-        $ejecucion->bindValue(":fechaSalida",$fechaSalidaString);
-        $ejecucion->bindValue(":notas",$dto->notas,$dto->notas === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
-        $ejecucion->bindValue(":importe",$dto->importe);
+        $ejecucion->bindValue(":nombreHuesped", $dto->nombreHuesped, PDO::PARAM_STR);
+        $ejecucion->bindValue(":emailHuesped", $dto->emailHuesped, PDO::PARAM_STR);
+        $ejecucion->bindValue(":nombreAlojamiento", $dto->nombreAlojamiento, PDO::PARAM_STR);
+        $ejecucion->bindValue(":fechaEntrada", $fechaEntradaString);
+        $ejecucion->bindValue(":fechaSalida", $fechaSalidaString);
+        $ejecucion->bindValue(":notas", $dto->notas, $dto->notas === null ? PDO::PARAM_NULL : PDO::PARAM_STR);
+        $ejecucion->bindValue(":importe", $dto->importe);
         $ejecucion->execute();
+        $ultimoId = (int)$this->pdo->lastInsertId();
 
-        return (int)$this->pdo->lastInsertId();
+        return $ultimoId;
     }
 
 
