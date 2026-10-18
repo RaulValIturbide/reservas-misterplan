@@ -2,15 +2,18 @@
 declare(strict_types=1);
 
 namespace App\Database;
+
 use PDO;
 use PDOException;
 use RuntimeException;
 
-class Conexion{
+class Conexion
+{
     private static ?PDO $pdo = null;
 
-    public static function obtenerConexion() : PDO{
-        if(self::$pdo !== null){
+    public static function obtenerConexion(): PDO
+    {
+        if (self::$pdo !== null) {
             return self::$pdo;
         }
         $host = $_ENV['DB_HOST'] ?? 'localhost';
@@ -27,9 +30,9 @@ class Conexion{
             PDO::ATTR_EMULATE_PREPARES => false
         ];
 
-        try{
+        try {
             self::$pdo = new PDO($dsn, $usuario, $contrasenya, $opciones);
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             throw new RuntimeException('Error conectando a la base de datos.', 0, $e);
         }
         return self::$pdo;
