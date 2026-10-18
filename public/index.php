@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
+use App\Repository\ReservaEventoRepository;
 use App\Repository\ReservaRepository;
+use App\Service\ReservaService;
 use App\Database\Conexion;
 use App\Exception\ValidacionException;
 use App\Validation\ReservaValidation;
@@ -13,7 +15,11 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 $dot = Dotenv::createImmutable(dirname(__DIR__));
 $dot->load();
 
-$repoReserva = new ReservaRepository(Conexion::obtenerConexion());
+$pdoSingleton = Conexion::obtenerConexion();
+$repoReserva = new ReservaRepository($pdoSingleton);
+$repoReservaEvento = new ReservaEventoRepository($pdoSingleton);
+$reservaService = new ReservaService($pdoSingleton, $repoReserva, $repoReservaEvento);
+
 
 
 $metodo = $_SERVER['REQUEST_METHOD'];
@@ -43,7 +49,7 @@ function responderBusquedaID(ReservaRepository $repo, int $numID): void
     }
 }
 
-function crearReserva(ReservaRepository $repo):void
+function crearReserva(ReservaService $reservaServicio):void
 {
     $reservaValidation = new ReservaValidation();
     $texto = file_get_contents('php://input');
@@ -54,10 +60,14 @@ function crearReserva(ReservaRepository $repo):void
     } else {
         try {
             $reserva = $reservaValidation->validarReserva($datos);
-            responderJson(['mensaje'=>'Reserva validada'], 201);
-            $repo->insertar($reserva);
+            $idCreado = $reservaServicio->crear($reserva);
+
+            responderJson($reservaServicio->buscarPorID($idCreado), 201);
+
         } catch (ValidacionException $e) {
             responderJson(['errores' => $e->errores], 400);
+        } catch (Throwable $e) {
+            responderJson(['mensaje' => 'Error al crear la reserva'], 500);
         }
     }
 
@@ -79,7 +89,7 @@ $peticion = $metodo . $ruta;
 match ($peticion) {
     'GET/api/reservas' => responderJson($repoReserva->listarTodasReservas(), 200),
     'GET/api/reservas/id' => responderBusquedaID($repoReserva, $numIdConsulta),
-    'POST/api/reservas' => crearReserva($repoReserva),
+    'POST/api/reservas' => crearReserva($reservaService),
     'PATCH/api/reservas/id' => responderJson(['mensaje' => 'actualizar'], 200),
     'DELETE/api/reservas/id' => responderJson(['mensaje' => 'no permitido'], 405),
 
