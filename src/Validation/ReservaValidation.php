@@ -37,9 +37,9 @@ class ReservaValidation
         //NombreHuesped
         $nombreHuespedValidacion = $this->validarStringObligatorio(
             campo: $nombreHuesped,
-            msgError: "Falta nombre huesped.",
+            msgError: "Falta nombre huésped.",
             cantidadCaracter: 150,
-            msgMaxLength: "Formato de nombre demasiado largo (150 max).");
+            msgMaxLength: "El nombre es demasiado largo (150 max).");
         if ($nombreHuespedValidacion !== null) {
             $errores["nombre_huesped"] = $nombreHuespedValidacion;
         }
@@ -47,16 +47,16 @@ class ReservaValidation
         //EmailHuesped
         $emailHuespedValidacion = $this->validarStringObligatorio(
             campo: $emailHuesped,
-            msgError: "Falta email huesped.",
+            msgError: "Falta email huésped.",
             cantidadCaracter: 300,
-            msgMaxLength: "Formato de email demasiado largo (300 max).");
+            msgMaxLength: "El email es demasiado largo (300 max).");
 
         if ($emailHuespedValidacion !== null) {
             $errores["email_huesped"] = $emailHuespedValidacion;
 
         }//Si el contenido está correcto pasamos a validar el formato
         else if (filter_var($emailHuesped, FILTER_VALIDATE_EMAIL) === false) {
-            $errores["email_huesped"] = "Formato de email no valido.";
+            $errores["email_huesped"] = "Formato de email no válido.";
         }
 
         //Nombre Alojamiento
@@ -64,7 +64,7 @@ class ReservaValidation
             campo: $nombreAlojamiento,
             msgError: "Falta nombre alojamiento.",
             cantidadCaracter: 300,
-            msgMaxLength: "Nombre de alojamiento es demasiado largo (300 max).");
+            msgMaxLength: "El nombre de alojamiento es demasiado largo (300 max).");
 
         if ($nombreAlojamientoValidacion !== null) {
             $errores["nombre_alojamiento"] = $nombreAlojamientoValidacion;
@@ -102,7 +102,7 @@ class ReservaValidation
         }
 
         //Comprobamos y validamos o lanzamos error
-        if(!empty($errores)) {
+        if (!empty($errores)) {
             throw new ValidacionException($errores);
         }
 
@@ -142,11 +142,15 @@ class ReservaValidation
     {
         $mensaje = null;
         if (is_string($fecha)) {
-            $fechaValidada = DateTimeImmutable::CreateFromFormat('!Y-m-d', $fecha);
-            if ($fechaValidada === false) {
-                $mensaje = "Formato de fecha incorrecto.";
-            } else if ($fechaValidada->format('Y-m-d') !== $fecha) {
-                $mensaje = "Fecha desconocida o incorrecta.";
+            if (trim($fecha) === "") {
+                $mensaje = "Falta fecha.";
+            } else {
+                $fechaValidada = DateTimeImmutable::createFromFormat('!Y-m-d', $fecha);
+                if ($fechaValidada === false) {
+                    $mensaje = "Formato de fecha incorrecto.";
+                } else if ($fechaValidada->format('Y-m-d') !== $fecha) {
+                    $mensaje = "Fecha desconocida o incorrecta.";
+                }
             }
         } else {
             $mensaje = "Falta fecha.";
@@ -158,8 +162,8 @@ class ReservaValidation
     {
         $mensaje = null;
 
-        $fechaEntradaDate = DateTimeImmutable::CreateFromFormat('!Y-m-d', $fechaEntrada);
-        $fechaSalidaDate = DateTimeImmutable::CreateFromFormat('!Y-m-d', $fechaSalida);
+        $fechaEntradaDate = DateTimeImmutable::createFromFormat('!Y-m-d', $fechaEntrada);
+        $fechaSalidaDate = DateTimeImmutable::createFromFormat('!Y-m-d', $fechaSalida);
 
         if ($fechaEntradaDate >= $fechaSalidaDate) {
             $mensaje = "La fecha de salida debe ser posterior a la de entrada";

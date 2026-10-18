@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Dto\NuevaReservaDTO;
-use Exception;
 use PDO;
 
 class ReservaRepository

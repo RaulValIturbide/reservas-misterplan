@@ -39,8 +39,20 @@ class ReservaService
         return $ultimoID;
     }
 
-    public function buscarPorID(int $id):?array{
-        return $this->reservaRepository->buscarPorID($id);
+    public function obtenerDetalle(int $reservaId): ?array
+    {
+        $datos = $this->reservaRepository->buscarPorID($reservaId);
+        if ($datos === null) {
+            return null;
+        }
+        $datos["eventos"] = $this->reservaEventoRepository->buscarPorReserva($reservaId);
+
+        return $datos;
+    }
+
+    public function listarReservas(): array
+    {
+        return $this->reservaRepository->listarTodasReservas();
     }
 
 

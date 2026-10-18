@@ -9,15 +9,16 @@ use DateTimeImmutable;
  */
 class  NuevaReservaDTO
 {
-    public function  __construct(
-            public readonly string $nombreHuesped,
-            public readonly string $emailHuesped,
-            public readonly string $nombreAlojamiento,
-            public readonly DateTimeImmutable $fechaEntrada,
-            public readonly DateTimeImmutable $fechaSalida,
-            public readonly string $importe,
-            public readonly ?string $notas = null
+    public function __construct(
+        public readonly string            $nombreHuesped,
+        public readonly string            $emailHuesped,
+        public readonly string            $nombreAlojamiento,
+        public readonly DateTimeImmutable $fechaEntrada,
+        public readonly DateTimeImmutable $fechaSalida,
+        public readonly string            $importe,
+        public readonly ?string           $notas = null
     )
-    {}
+    {
+    }
 
 }

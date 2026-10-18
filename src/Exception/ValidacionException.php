@@ -7,7 +7,7 @@ class ValidacionException extends \Exception
 {
     public function __construct(
         public readonly array  $errores,
-        string $mensaje = "Los datos de la reserva no son correctos"
+        string $mensaje = "Los datos enviados no son válidos"
     )
     {
         parent::__construct($mensaje);
