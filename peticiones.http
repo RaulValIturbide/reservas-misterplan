@@ -2,7 +2,8 @@
 //ESTO ES VALIDACION DE PRUEBAS
 
 ### 1 Reserva correcta -> 201
-POST http://localhost:8000/api/reservas
+
+POST {{baseUrl}}/api/reservas
 Content-Type: application/json
 
 {
@@ -15,7 +16,7 @@ Content-Type: application/json
 }
 
 ### 2 Sin nombre ni email -> 400
-POST http://localhost:8000/api/reservas
+POST {{baseUrl}}/api/reservas
 Content-Type: application/json
 
 {
@@ -28,7 +29,7 @@ Content-Type: application/json
 }
 
 ### 3 Email incorrecto y fechas invertidas -> 400
-POST http://localhost:8000/api/reservas
+POST {{baseUrl}}/api/reservas
 Content-Type: application/json
 
 {
@@ -41,7 +42,7 @@ Content-Type: application/json
 }
 
 ### 4 JSON mal formado en la peticion -> 400
-POST http://localhost:8000/api/reservas
+POST {{baseUrl}}/api/reservas
 Content-Type: application/json
 
 {
@@ -49,24 +50,24 @@ Content-Type: application/json
 }
 
 ### 5 JSON que no es un objeto -> 400
-POST http://localhost:8000/api/reservas
+POST {{baseUrl}}/api/reservas
 Content-Type: application/json
 
 "soy un json pero no una array"
 
 
 ### 6 prueba busqueda reservas -> 200
-GET http://localhost:8000/api/reservas
+GET {{baseUrl}}/api/reservas
 
 
 ### 7 Detalle de reserva concreta -> 200
-GET http://localhost:8000/api/reservas/18
+GET {{baseUrl}}/api/reservas/18
 
 ### 8 No existe la reserva -> 404
-GET http://localhost:8000/api/reservas/999
+GET {{baseUrl}}/api/reservas/999
 
 ### 9 Confirmar una pendiente -> 200
-PATCH http://localhost:8000/api/reservas/2
+PATCH {{baseUrl}}/api/reservas/2
 Content-Type: application/json
 
 {
@@ -74,7 +75,7 @@ Content-Type: application/json
 }
 
 ### 10 Repetir la misma petición -> 409
-PATCH http://localhost:8000/api/reservas/2
+PATCH {{baseUrl}}/api/reservas/2
 Content-Type: application/json
 
 {
@@ -82,7 +83,7 @@ Content-Type: application/json
 }
 
 ### 11 Estado que no existe -> 400
-PATCH http://localhost:8000/api/reservas/2
+PATCH {{baseUrl}}/api/reservas/2
 Content-Type: application/json
 
 {
@@ -90,7 +91,7 @@ Content-Type: application/json
 }
 
 ### 12 Estado que no es texto -> 400
-PATCH http://localhost:8000/api/reservas/2
+PATCH {{baseUrl}}/api/reservas/2
 Content-Type: application/json
 
 {
@@ -98,7 +99,7 @@ Content-Type: application/json
 }
 
 ### 13 Sin campo estado -> 400
-PATCH http://localhost:8000/api/reservas/2
+PATCH {{baseUrl}}/api/reservas/2
 Content-Type: application/json
 
 {
@@ -106,7 +107,7 @@ Content-Type: application/json
 }
 
 ### 14 Reserva que no existe -> 404
-PATCH http://localhost:8000/api/reservas/999
+PATCH {{baseUrl}}/api/reservas/999
 Content-Type: application/json
 
 {
@@ -114,7 +115,7 @@ Content-Type: application/json
 }
 
 ### 15 JSON mal formado -> 400
-PATCH http://localhost:8000/api/reservas/2
+PATCH {{baseUrl}}/api/reservas/2
 Content-Type: application/json
 
 {
@@ -122,7 +123,7 @@ Content-Type: application/json
 }
 
 ### 16 Cancelar la confirmada -> 200 (el historial debe mostrar los dos cambios)
-PATCH http://localhost:8000/api/reservas/2
+PATCH {{baseUrl}}/api/reservas/2
 Content-Type: application/json
 
 {
@@ -132,61 +133,61 @@ Content-Type: application/json
 ### ===================== FILTROS DEL LISTADO =====================
 
 ### F1 Sin filtros -> 200, todas ordenadas por fecha_entrada
-GET http://localhost:8000/api/reservas
+GET {{baseUrl}}/api/reservas
 
 ### F2 Por estado -> 200, solo pendientes (Diego, Juan...)
-GET http://localhost:8000/api/reservas?estado=pendiente
+GET {{baseUrl}}/api/reservas?estado=pendiente
 
 ### F3 Rango de fechas (noviembre) -> 200 (María, Diego...)
-GET http://localhost:8000/api/reservas?desde=2026-11-01&hasta=2026-11-30
+GET {{baseUrl}}/api/reservas?desde=2026-11-01&hasta=2026-11-30
 
 ### F4 Solo "desde" -> 200, llegadas a partir de diciembre
-GET http://localhost:8000/api/reservas?desde=2026-12-01
+GET {{baseUrl}}/api/reservas?desde=2026-12-01
 
 ### F5 Mismo día en desde y hasta -> 200 (Lucía, entra el 2026-12-05)
-GET http://localhost:8000/api/reservas?desde=2026-12-05&hasta=2026-12-05
+GET {{baseUrl}}/api/reservas?desde=2026-12-05&hasta=2026-12-05
 
 ### F6 Nombre parcial -> 200 (María García)
-GET http://localhost:8000/api/reservas?nombre=garc
+GET {{baseUrl}}/api/reservas?nombre=garc
 
 ### F7 Nombre sin tilde -> ¿encuentra a "María García"? Depende de la collation
-GET http://localhost:8000/api/reservas?nombre=garcia
+GET {{baseUrl}}/api/reservas?nombre=garcia
 
 ### F8 Combinados -> 200 (Juan Gil: pendiente, diciembre, "gil")
-GET http://localhost:8000/api/reservas?estado=pendiente&desde=2026-12-01&hasta=2026-12-31&nombre=gil
+GET {{baseUrl}}/api/reservas?estado=pendiente&desde=2026-12-01&hasta=2026-12-31&nombre=gil
 
 ### F9 Sin resultados -> 200 con []
-GET http://localhost:8000/api/reservas?estado=cancelada&nombre=zzz
+GET {{baseUrl}}/api/reservas?estado=cancelada&nombre=zzz
 
 ### F10 Filtros vacíos -> 200, igual que sin filtros
-GET http://localhost:8000/api/reservas?estado=&desde=&hasta=&nombre=
+GET {{baseUrl}}/api/reservas?estado=&desde=&hasta=&nombre=
 
 ### F11 Estado inválido -> 400
-GET http://localhost:8000/api/reservas?estado=xxx
+GET {{baseUrl}}/api/reservas?estado=xxx
 
 ### F12 Fecha inexistente -> 400
-GET http://localhost:8000/api/reservas?desde=2026-02-31
+GET {{baseUrl}}/api/reservas?desde=2026-02-31
 
 ### F13 Formato de fecha incorrecto -> 400
-GET http://localhost:8000/api/reservas?desde=10/11/2026
+GET {{baseUrl}}/api/reservas?desde=10/11/2026
 
 ### F14 desde posterior a hasta -> 400
-GET http://localhost:8000/api/reservas?desde=2026-12-01&hasta=2026-11-01
+GET {{baseUrl}}/api/reservas?desde=2026-12-01&hasta=2026-11-01
 
 ### F15 Estado como array -> 400 (no 500)
-GET http://localhost:8000/api/reservas?estado[]=pendiente
+GET {{baseUrl}}/api/reservas?estado[]=pendiente
 
 ### F16 Varios errores a la vez -> 400 con los tres errores
-GET http://localhost:8000/api/reservas?estado=xxx&desde=abc&hasta=2026-13-01
+GET {{baseUrl}}/api/reservas?estado=xxx&desde=abc&hasta=2026-13-01
 
 ### R1 Método no permitido en la colección -> 405, Allow: GET, POST
-PUT http://localhost:8000/api/reservas
+PUT {{baseUrl}}/api/reservas
 
 ### R2 Método no permitido en el detalle -> 405, Allow: GET, PATCH
-DELETE http://localhost:8000/api/reservas/1
+DELETE {{baseUrl}}/api/reservas/1
 
 ### R3 Ruta inexistente -> 404
-GET http://localhost:8000/api/hoteles
+GET {{baseUrl}}/api/hoteles
 
 ### R4 Id no numérico -> 404
-GET http://localhost:8000/api/reservas/abc
+GET {{baseUrl}}/api/reservas/abc
