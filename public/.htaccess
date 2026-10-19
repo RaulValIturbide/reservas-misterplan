@@ -1,0 +1,8 @@
+RewriteEngine On
+
+# Si la ruta es un fichero o carpeta real (css, js, imágenes), se sirve tal cual
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Todo lo demás va al index.php (front controller)
+RewriteRule ^ index.php [QSA,L]
