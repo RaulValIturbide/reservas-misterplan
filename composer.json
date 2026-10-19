@@ -18,6 +18,7 @@
         "php": ">=8.1",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "twig/twig": "^3.30"
     }
 }
