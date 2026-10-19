@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Dto\FiltroReservaDTO;
 use App\Dto\NuevaReservaDTO;
 use App\Enum\EstadoReserva;
 use PDO;
@@ -16,15 +17,38 @@ class ReservaRepository
         $this->pdo = $pdo;
     }
 
-    public function listarTodasReservas(): array
+    public function listar(FiltroReservaDTO $filtro): array
     {
+        $condiciones = [];
+        $parametros = [];
+        if($filtro->estado !== null){
+            $condiciones[] = "estado = :estado";
+            $parametros["estado"] = $filtro->estado->value;
+        }
+        if($filtro->desde !== null){
+            $parametros["desde"] = $filtro->desde->format('Y-m-d');
+            $condiciones[] = "fecha_entrada >= :desde";
+        }
+        if($filtro->hasta !== null){
+            $parametros["hasta"] = $filtro->hasta->format("Y-m-d");
+            $condiciones[] = "fecha_entrada <= :hasta";
+        }
+        if($filtro->nombre !== null){
+            $parametros["nombre"] ='%' . $filtro->nombre . '%';
+            $condiciones[] = "nombre_huesped LIKE :nombre";
+        }
+
         $sql = " SELECT id,nombre_huesped,nombre_alojamiento,notas,
                   importe,fecha_salida,fecha_entrada,fecha_creacion,
                   estado,email_huesped
-                  FROM reserva
-                  ORDER BY fecha_entrada ASC";
+                  FROM reserva";
 
-        $ejecucion = $this->pdo->query($sql);
+        if(count($condiciones) > 0){
+            $sql .= " WHERE ".implode(" AND ", $condiciones);
+        }
+        $sql .= " ORDER BY fecha_entrada ASC,id ASC";
+        $ejecucion = $this->pdo->prepare($sql);
+        $ejecucion->execute($parametros);
         return $ejecucion->fetchAll(PDO::FETCH_ASSOC);
     }
 

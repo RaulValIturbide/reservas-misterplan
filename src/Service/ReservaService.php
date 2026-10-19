@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Dto\FiltroReservaDTO;
 use App\Dto\NuevaReservaDTO;
 use App\Enum\EstadoReserva;
 use App\Exception\ReservaNoEncontradaException;
@@ -53,9 +54,9 @@ class ReservaService
         return $datos;
     }
 
-    public function listarReservas(): array
+    public function listarReservas(FiltroReservaDTO $filtro): array
     {
-        return $this->reservaRepository->listarTodasReservas();
+        return $this->reservaRepository->listar($filtro);
     }
 
     public function cambiarEstado(int $reservaId, EstadoReserva $estado): void
