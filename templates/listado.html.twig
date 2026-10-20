@@ -4,5 +4,35 @@
 
 {% block contenido %}
     <h1>Reservas</h1>
-    <p>Hay {{ reservas|length }} reservas.</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th scope="col">Huésped</th>
+            <th scope="col">Alojamiento</th>
+            <th scope="col">Entrada</th>
+            <th scope="col">Salida</th>
+            <th scope="col">Importe</th>
+            <th scope="col">Estado</th>
+            <th scope="col"><span class="visually-hidden">Acciones</span></th>
+        </tr>
+        </thead>
+        <tbody id="tabla-reservas">
+        {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.nombre_huesped }}</td>
+                <td>{{ reserva.nombre_alojamiento }}</td>
+                <td>{{ reserva.fecha_entrada|date('d/m/Y') }}</td>
+                <td>{{ reserva.fecha_salida|date('d/m/Y') }}</td>
+                <td>{{ reserva.importe|number_format(2, ',', '.') }} €</td>
+                <td><span class="estado estado-{{ reserva.estado }}">{{ reserva.estado|capitalize }}</span></td>
+                <td><a href="/reservas/{{ reserva.id }}">Ver</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">No hay reservas.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

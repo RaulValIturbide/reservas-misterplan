@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block titulo %}Reserva no encontrada{% endblock %}
+
+{% block contenido %}
+    <h1>Reserva no encontrada</h1>
+    <p>No existe ninguna reserva con el número {{ id }}.</p>
+    <p><a href="/">&larr; Volver al listado</a></p>
+{% endblock %}

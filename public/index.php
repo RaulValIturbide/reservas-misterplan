@@ -21,7 +21,6 @@ try {
     $dot->load();
 
 
-
     // Composición de dependencias (inyección manual)
     $pdo = Conexion::obtenerConexion();
     $reservaService = new ReservaService(
@@ -41,7 +40,7 @@ try {
         'autoescape' => 'html',
         'strict_variables' => true,
     ]);
-    $vistaController = new VistaController($reservaService,$twig);
+    $vistaController = new VistaController($reservaService, $twig);
 
     // Enrutado
     $metodo = $_SERVER['REQUEST_METHOD'];
@@ -53,13 +52,21 @@ try {
         && $fragmentos[1] === 'api'
         && $fragmentos[2] === 'reservas'
         && ctype_digit($fragmentos[3])) {
+        // /api/reservas/{id}
         $id = (int)$fragmentos[3];
         $ruta = '/api/reservas/id';
+    } elseif (count($fragmentos) === 3
+        && $fragmentos[1] === 'reservas'
+        && ctype_digit($fragmentos[2])) {
+        // /reservas/{id} (vista HTML)
+        $id = (int)$fragmentos[2];
+        $ruta = '/reservas/id';
     }
 
-    // Rutas de la API y los métodos que acepta cada una (única fuente de verdad para 404/405)
+    // Rutas (vistas y API) y los métodos que acepta cada una (única fuente de verdad para 404/405)
     $metodosPermitidos = [
         '/' => ['GET'],
+        '/reservas/id' => ['GET'],
         '/api/reservas' => ['GET', 'POST'],
         '/api/reservas/id' => ['GET', 'PATCH'],
     ];
@@ -72,6 +79,7 @@ try {
     } else {
         match ($metodo . $ruta) {
             'GET/' => $vistaController->listado(),
+            'GET/reservas/id' => $vistaController->detalle($id),
             'GET/api/reservas' => $controller->listar(),
             'GET/api/reservas/id' => $controller->mostrar($id),
             'POST/api/reservas' => $controller->crear(),

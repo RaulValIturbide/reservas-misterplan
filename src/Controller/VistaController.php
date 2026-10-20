@@ -27,4 +27,22 @@ class VistaController
             'reservas' => $reservas,
         ]);
     }
+
+    /** GET /reservas/{id} */
+    public function detalle(int $id): void
+    {
+        $reserva = $this->reservaService->obtenerDetalle($id);
+
+        if ($reserva === null) {
+            http_response_code(404);
+            echo $this->twig->render('no_encontrada.html.twig', [
+                'id' => $id,
+            ]);
+            return;
+        }
+
+        echo $this->twig->render('detalle.html.twig', [
+            'reserva' => $reserva,
+        ]);
+    }
 }

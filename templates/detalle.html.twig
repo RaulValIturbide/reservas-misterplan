@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block titulo %}Reserva de {{ reserva.nombre_huesped }}{% endblock %}
+
+{% block contenido %}
+    <p><a href="/">&larr; Volver al listado</a></p>
+
+    <h1>Reserva #{{ reserva.id }}</h1>
+
+    <section aria-labelledby="titulo-datos">
+        <h2 id="titulo-datos">Datos</h2>
+        <dl>
+            <dt>Huésped</dt>
+            <dd>{{ reserva.nombre_huesped }}</dd>
+
+            <dt>Email</dt>
+            <dd><a href="mailto:{{ reserva.email_huesped }}">{{ reserva.email_huesped }}</a></dd>
+
+            <dt>Alojamiento</dt>
+            <dd>{{ reserva.nombre_alojamiento }}</dd>
+
+            <dt>Entrada</dt>
+            <dd>{{ reserva.fecha_entrada|date('d/m/Y') }}</dd>
+
+            <dt>Salida</dt>
+            <dd>{{ reserva.fecha_salida|date('d/m/Y') }}</dd>
+
+            <dt>Importe</dt>
+            <dd>{{ reserva.importe|number_format(2, ',', '.') }} €</dd>
+
+            <dt>Estado</dt>
+            <dd><span class="estado estado-{{ reserva.estado }}">{{ reserva.estado|capitalize }}</span></dd>
+
+            <dt>Notas</dt>
+            <dd>{{ reserva.notas ?? 'Sin notas' }}</dd>
+
+            <dt>Creada</dt>
+            <dd>{{ reserva.fecha_creacion|date('d/m/Y H:i') }}</dd>
+        </dl>
+    </section>
+
+    <section aria-labelledby="titulo-historial">
+        <h2 id="titulo-historial">Historial</h2>
+        <ol class="timeline">
+            {% for evento in reserva.eventos %}
+                <li>
+                    <time datetime="{{ evento.fecha_creacion|date('Y-m-d H:i') }}">{{ evento.fecha_creacion|date('d/m/Y H:i') }}</time>
+                    <strong>{{ evento.tipo|capitalize }}</strong>
+                    {% if evento.descripcion %}— {{ evento.descripcion }}{% endif %}
+                </li>
+            {% else %}
+                <li>Sin eventos registrados.</li>
+            {% endfor %}
+        </ol>
+    </section>
+{% endblock %}
